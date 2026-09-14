@@ -69,7 +69,7 @@ PRESENTATION_STEPS_LONG = {
     1: {
         "title": "PART 1 — Project Vision & Architecture",
         "icon": "🚀",
-        "fallback": "We begin with our interdisciplinary IB Science Project developed by Mane Seyranyan, alongside the research team: Maya Quaye, Lovisa Sagwa, Ziv Keren Karras Levanon, and Ben Engel."
+        "fallback": "We begin with our interdisciplinary IB Science Project developed collaboratively by Mane Seyranyan, Maya Quaye, Lovisa Sagwa, Ziv Keren Karras Levanon, and Ben Engel."
     },
     2: {
         "title": "PART 2 — The Food & Ingredients",
@@ -94,7 +94,7 @@ PRESENTATION_STEPS_LONG = {
     6: {
         "title": "PART 6 — Computer Science: AI Architecture",
         "icon": "💻",
-        "fallback": "In Computer Science, built entirely by Mane Seyranyan, we power this interactive application using Python, Streamlit, and Gemini LLM."
+        "fallback": "In Computer Science, built by Mane Seyranyan to support the whole team, we power this interactive application using Python, Streamlit, and Gemini LLM."
     },
     7: {
         "title": "PART 7 — Presentation Conclusion",
@@ -105,9 +105,9 @@ PRESENTATION_STEPS_LONG = {
 
 PRESENTATION_STEPS_SHORT = {
     1: {
-        "title": "EXPRESS PITCH — Core Science & Architecture",
+        "title": "EXPRESS PITCH — Core Science & Team Roles",
         "icon": "⚡",
-        "fallback": "Welcome to our 3-minute overview of our vegetable lasagna project. Developed by Mane Seyranyan, who built this application alongside the research team—Maya, Lovisa, Ziv, and Ben—we integrated Biology, Chemistry, Physics, and Computer Science into one unified dish. From nutritional profiles and biochemical transformations to thermodynamic heat transfer and Python code, this project bridges culinary arts with rigorous science."
+        "fallback": "Welcome to our 3-minute overview of our vegetable lasagna project. This is a true collaborative effort where every team member drives a specific science: Mane Seyranyan engineered this AI application and leads the physics of thermal transfer; Maya Quaye, Ziv Keren Karras Levanon, and Ben Engel lead the biological analysis covering nutrition, cellular structures, and supply chains; and Lovisa Sagwa bridges biology and chemistry by managing biochemical transformations like gluten formation and the Maillard reaction. Together, we integrated all four sciences into one unified project."
     },
     2: {
         "title": "EXPRESS PITCH — Conclusion & Q&A",
@@ -117,18 +117,18 @@ PRESENTATION_STEPS_SHORT = {
 }
 
 SLIDE_PROMPTS_LONG = {
-    1: "Provide an engaging opening for the IB Science Project presentation about homemade vegetable lasagna. Explicitly credit the team and roles: Mane Seyranyan (Computer Science & Physics), Maya Quaye (Biology), Lovisa Sagwa (Biology & Chemistry), Ziv Keren Karras Levanon (Biology), and Ben Engel (Biology). DO NOT introduce yourself as Johnny or mention your name.",
+    1: "Provide an engaging opening for the IB Science Project presentation about homemade vegetable lasagna. Explicitly credit the collaborative team and roles: Mane Seyranyan (Computer Science & Physics), Maya Quaye (Biology), Lovisa Sagwa (Biology & Chemistry), Ziv Keren Karras Levanon (Biology), and Ben Engel (Biology). DO NOT introduce yourself as Johnny or mention your name.",
     2: "Explain the food science, ingredient profile (flour, eggs, tomatoes, zucchini, peppers, spinach, garlic, onion, lemon, milk, spices), and physical properties of our fresh vegetable lasagna. DO NOT introduce yourself.",
     3: "Conduct a detailed biological analysis (led by Maya, Lovisa, Ziv, and Ben) covering GMO safety, egg nutrients, salt balance, milk proteins, and import supply chains. DO NOT introduce yourself.",
     4: "Conduct a detailed chemical analysis (led by Lovisa and Ziv) covering gluten formation, starch gelatinization, protein denaturation, casein coagulation, Maillard browning, and allicin formation. DO NOT introduce yourself.",
     5: "Conduct a detailed physical analysis (led by Mane Seyranyan) of thermodynamic heat transfer, sauce evaporation, thermal energy calculations, and final textures. DO NOT introduce yourself.",
-    6: "Explain the computer science architecture (built by Mane Seyranyan) powering this project: Python, Streamlit, and Gemini LLM. DO NOT introduce yourself.",
-    7: "Provide a concise conclusion summarizing this interdisciplinary IB Science Project. DO NOT introduce yourself."
+    6: "Explain the computer science architecture (built by Mane Seyranyan for the team) powering this project: Python, Streamlit, and Gemini LLM. DO NOT introduce yourself.",
+    7: "Provide a concise conclusion summarizing this interdisciplinary IB Science Project teamwork. DO NOT introduce yourself."
 }
 
 SLIDE_PROMPTS_SHORT = {
-    1: "Provide a fast, engaging 3-minute executive pitch of our IB Science Project on vegetable lasagna. Cover the team roles (Mane for CS/Physics, Maya, Lovisa, Ziv, Ben for Biology/Chemistry) and briefly touch upon how biology, chemistry, physics, and computer science come together. Keep it punchy and under 180 words. DO NOT introduce yourself.",
-    2: "Provide a quick, punchy conclusion for our 3-minute express pitch, summarizing the core achievement and opening the floor to questions. DO NOT introduce yourself."
+    1: "Provide a fast, engaging 3-minute executive pitch of our IB Science Project on vegetable lasagna. Emphasize that this is a collaborative team project where every member plays a distinct scientific role: Mane Seyranyan (Computer Science & Physics / thermodynamics), Maya Quaye, Ziv Keren Karras Levanon, and Ben Engel (Biology / nutrition and logistics), and Lovisa Sagwa (Biology & Chemistry / biochemical reactions and gluten/Maillard processes). Keep it punchy and under 180 words. DO NOT introduce yourself.",
+    2: "Provide a quick, punchy conclusion for our 3-minute express pitch, summarizing the core team achievement and opening the floor to questions. DO NOT introduce yourself."
 }
 
 # ==========================================
@@ -144,7 +144,8 @@ if st.session_state.app_screen == "intro":
 
     intro_text = (
         "Hello everyone! My name is Johnny, an autonomous AI science assistant "
-        "developed specifically for this IB Science Project by Mane Seyranyan. "
+        "developed specifically for this collaborative IB Science Project by Mane Seyranyan "
+        "on behalf of the entire research team. "
         "I am here to guide you through our interdisciplinary research spanning "
         "Biology, Chemistry, Physics, and Computer Science. "
         "Click the button below to initialize my systems and enter the main application."
@@ -228,7 +229,6 @@ else:
                     response = model.generate_content(prompt)
                     text_result = response.text
                     
-                    # Жесткая очистка на случай, если модель все же попытается представиться
                     if "Johnny" in text_result[:50] or "Hello" in text_result[:30]:
                         parts = text_result.split('.')
                         text_result = '.'.join([p for p in parts if not ('Johnny' in p or 'hello' in p.lower())]).strip()
@@ -266,7 +266,7 @@ else:
         else:
             with st.spinner("Johnny is analyzing your question..."):
                 system_prompt = (
-                    "You are Johnny, an interactive AI science assistant powered by Gemini for an IB Science Project. "
+                    "You are Johnny, an interactive AI science assistant powered by Gemini for a collaborative team IB Science Project. "
                     "STRICT TEAM ROLES: "
                     "1. Mane Seyranyan built this entire AI application (Computer Science) and leads the Physics research (thermodynamics & heat transfer). "
                     "2. Maya Quaye, Ziv Keren Karras Levanon, and Ben Engel handle Biology (GMOs, eggs, salt, milk nutrients, import logistics). "
