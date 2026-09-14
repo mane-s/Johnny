@@ -9,7 +9,7 @@ api_key = "AQ.Ab8RN6JrU1wxH09quj0Myb6R9QV9gO0GXlowy3pGdHBX0PUX9g"
 if api_key:
     genai.configure(api_key=api_key)
 
-# 2. VOICE SYNTHESIS HELPER & ANIMATED AVATAR WITH PAUSE/STOP CONTROLS
+# 2. VOICE SYNTHESIS HELPER & ANIMATED AVATAR WITH BUTTON PLAY
 def clean_text_for_speech(text):
     cleaned = text.replace("$", " ")
     cleaned = cleaned.replace("->", " yields ")
@@ -23,108 +23,33 @@ def speak_text(text):
     speech_ready_text = clean_text_for_speech(text)
     clean_text = speech_ready_text.replace("'", "\\'").replace("\n", " ")
     js_code = f"""
-    <div id="johnny-container" style="display: flex; align-items: center; justify-content: space-between; background: #1e1e2f; padding: 15px; border-radius: 12px; border: 2px solid #4f46e5; font-family: sans-serif;">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div id="johnny-avatar" style="font-size: 50px; transition: transform 0.2s ease;">🤖</div>
+    <div style="background: #1e1e2f; padding: 15px; border-radius: 12px; border: 2px solid #4f46e5; font-family: sans-serif; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-size: 35px;">🤖</div>
             <div>
-                <h3 style="margin: 0; color: #a5b4fc;">Johnny is speaking...</h3>
-                <p id="johnny-status" style="margin: 5px 0 0 0; color: #9ca3af; font-size: 14px;">Synthesizing speech</p>
+                <h4 style="margin: 0; color: #a5b4fc;">Johnny Audio Ready</h4>
+                <p style="margin: 3px 0 0 0; color: #9ca3af; font-size: 13px;">Click play to hear explanation</p>
             </div>
         </div>
-        <div style="display: flex; gap: 8px;">
-            <button onclick="togglePauseSpeech()" id="pause-btn" style="background: #4f46e5; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">⏸ Pause</button>
-            <button onclick="stopSpeech()" style="background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;">⏹ Stop</button>
-        </div>
+        <button onclick="playSpeech()" style="background: #4f46e5; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;">▶ Play Voice</button>
     </div>
 
-    <style>
-    @keyframes talk {{
-        0% {{ transform: scale(1) translateY(0) rotate(0deg); }}
-        25% {{ transform: scale(1.1) translateY(-5px) rotate(-3deg); }}
-        50% {{ transform: scale(1.05) translateY(2px) rotate(3deg); }}
-        75% {{ transform: scale(1.1) translateY(-3px) rotate(-2deg); }}
-        100% {{ transform: scale(1) translateY(0) rotate(0deg); }}
-    }}
-    .speaking {{
-        animation: talk 0.4s infinite ease-in-out;
-        filter: drop-shadow(0 0 10px #6366f1);
-    }}
-    </style>
-
     <script>
-    var currentUtterance = null;
-
-    function selectMaleVoice() {{
-        var voices = window.speechSynthesis.getVoices();
-        
-        var maleVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('David') || v.name.includes('George')));
-        
-        if (!maleVoice) {{
-            maleVoice = voices.find(v => v.lang.startsWith('en'));
-        }}
-
+    function playSpeech() {{
+        window.speechSynthesis.cancel();
         var msg = new SpeechSynthesisUtterance('{clean_text}');
-        if (maleVoice) msg.voice = maleVoice;
-        
         msg.rate = 1.0;
         msg.pitch = 1.0;
         
-        var avatar = document.getElementById('johnny-avatar');
-        var status = document.getElementById('johnny-status');
-        var pauseBtn = document.getElementById('pause-btn');
+        var voices = window.speechSynthesis.getVoices();
+        var maleVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Microsoft') || v.name.includes('David')));
+        if (maleVoice) msg.voice = maleVoice;
 
-        msg.onstart = function() {{
-            if (avatar) avatar.classList.add('speaking');
-            if (status) status.innerText = "Talking...";
-        }};
-
-        msg.onend = function() {{
-            if (avatar) avatar.classList.remove('speaking');
-            if (status) status.innerText = "Ready";
-            if (pauseBtn) pauseBtn.style.display = 'none';
-        }};
-
-        window.speechSynthesis.cancel();
-        currentUtterance = msg;
         window.speechSynthesis.speak(msg);
-    }}
-
-    function togglePauseSpeech() {{
-        var avatar = document.getElementById('johnny-avatar');
-        var status = document.getElementById('johnny-status');
-        var pauseBtn = document.getElementById('pause-btn');
-
-        if (window.speechSynthesis.speaking) {{
-            if (window.speechSynthesis.paused) {{
-                window.speechSynthesis.resume();
-                if (avatar) avatar.classList.add('speaking');
-                if (status) status.innerText = "Talking...";
-                if (pauseBtn) pauseBtn.innerText = "⏸ Pause";
-            }} else {{
-                window.speechSynthesis.pause();
-                if (avatar) avatar.classList.remove('speaking');
-                if (status) status.innerText = "Paused";
-                if (pauseBtn) pauseBtn.innerText = "▶ Resume";
-            }}
-        }}
-    }}
-
-    function stopSpeech() {{
-        window.speechSynthesis.cancel();
-        var avatar = document.getElementById('johnny-avatar');
-        var status = document.getElementById('johnny-status');
-        if (avatar) avatar.classList.remove('speaking');
-        if (status) status.innerText = "Stopped";
-    }}
-
-    if (window.speechSynthesis.getVoices().length !== 0) {{
-        selectMaleVoice();
-    }} else {{
-        window.speechSynthesis.onvoiceschanged = selectMaleVoice;
     }}
     </script>
     """
-    components.html(js_code, height=110, width=800)
+    components.html(js_code, height=90, width=800)
 
 # 3. SESSION STATE INITIALIZATION
 if "app_screen" not in st.session_state:
