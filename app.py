@@ -220,13 +220,20 @@ else:
                     model = genai.GenerativeModel("gemini-1.5-flash")
                     prompt = (
                         "You are Johnny, the AI science assistant powered by Gemini. "
-                        "CRITICAL RULE: NEVER introduce yourself, never say 'My name is Johnny', never say 'Hello', and never use greetings. "
-                        "Dive straight into the scientific content using real-time AI generation. "
+                        "ABSOLUTE CRITICAL RULE: DO NOT introduce yourself, DO NOT say your name, DO NOT say 'Hello' or use any greetings whatsoever. "
+                        "Start your response immediately with the scientific facts. "
                         "Provide a thorough, scientifically rigorous explanation for: " + current_prompts_dict[current_step]
                     )
 
                     response = model.generate_content(prompt)
-                    st.session_state[cache_key] = response.text
+                    text_result = response.text
+                    
+                    # Жесткая очистка на случай, если модель все же попытается представиться
+                    if "Johnny" in text_result[:50] or "Hello" in text_result[:30]:
+                        parts = text_result.split('.')
+                        text_result = '.'.join([p for p in parts if not ('Johnny' in p or 'hello' in p.lower())]).strip()
+                    
+                    st.session_state[cache_key] = text_result if text_result else step_data["fallback"]
                 except Exception as e:
                     st.session_state[cache_key] = step_data["fallback"]
 
